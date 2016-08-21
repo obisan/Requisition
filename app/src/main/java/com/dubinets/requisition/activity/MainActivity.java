@@ -1,8 +1,10 @@
-package com.dubinets.requisition;
+package com.dubinets.requisition.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import com.dubinets.requisition.R;
 
 import java.util.ArrayList;
 
