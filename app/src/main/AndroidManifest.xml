@@ -3,6 +3,7 @@
     package="com.dubinets.requisition">
 
     <application
+        android:name=".activity.DaoApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,5 +17,9 @@
             </intent-filter>
         </activity>
     </application>
+
+    <meta-data
+        android:name="droidparts_dependency_provider"
+        android:value=".DependencyProvider" />
 
 </manifest>
