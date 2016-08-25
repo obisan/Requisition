@@ -5,9 +5,12 @@
     android:id="@+id/LinearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    >
+
     <fragment
-        android:name="com.dubinets.requisition.activity.order.OrderListActivity"
+        android:id="@+id/listfragment_itenerary"
+        android:name="com.dubinets.requisition.activity.order.ItineraryListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@android:layout/simple_list_item_1">

@@ -5,9 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.dubinets.requisition.db.ClientDao;
 import com.dubinets.requisition.db.CountDao;
+import com.dubinets.requisition.db.Cross_Itinerary_ClientDao;
 import com.dubinets.requisition.db.DaoMaster;
 import com.dubinets.requisition.db.DaoSession;
 import com.dubinets.requisition.db.ItemDao;
+import com.dubinets.requisition.db.ItineraryDao;
 import com.dubinets.requisition.db.OrderDao;
 import com.dubinets.requisition.db.PhotoDao;
 import com.dubinets.requisition.db.ShelftimeDao;
@@ -22,14 +24,16 @@ import org.greenrobot.greendao.database.Database;
 public class DatabaseHelper {
     private final String DATABASE_NAME = "veles.db";
 
-    private static ClientDao    clientDao;
-    private static CountDao     countDao;
-    private static ItemDao      itemDao;
-    private static OrderDao     orderDao;
-    private static PhotoDao     photoDao;
-    private static ShelftimeDao shelftimeDao;
-    private static SpotDao      spotDao;
-    private static TelephoneDao telephoneDao;
+    private static ClientDao                    clientDao;
+    private static CountDao                     countDao;
+    private static ItemDao                      itemDao;
+    private static OrderDao                     orderDao;
+    private static PhotoDao                     photoDao;
+    private static ShelftimeDao                 shelftimeDao;
+    private static SpotDao                      spotDao;
+    private static TelephoneDao                 telephoneDao;
+    private static ItineraryDao                 itineraryDao;
+    private static Cross_Itinerary_ClientDao    cross_itinerary_clientDao;
 
     private static DatabaseHelper       instance;
 
@@ -45,14 +49,14 @@ public class DatabaseHelper {
             @Override
             public void onCreate(Database db) {
                 super.onCreate(db);
-                new DatabasePopulator(context).populateDatabase(database);
+                //new DatabasePopulator(context).populateDatabase(database);
                 isEmpty = false;
             }
 
             @Override
             public void onUpgrade(Database db, int oldVersion, int newVersion) {
                 super.onUpgrade(db, oldVersion, newVersion);
-                if(!isEmpty) new DatabasePopulator(context).populateDatabase(database);
+                //if(!isEmpty) new DatabasePopulator(context).populateDatabase(database);
             }
         } ;
         database    = helper.getWritableDatabase();
@@ -60,14 +64,16 @@ public class DatabaseHelper {
         daoMaster   = new DaoMaster(database);
         daoSession  = daoMaster.newSession();
 
-        clientDao      = daoSession.getClientDao();
-        countDao       = daoSession.getCountDao();
-        itemDao        = daoSession.getItemDao();
-        orderDao       = daoSession.getOrderDao();
-        photoDao       = daoSession.getPhotoDao();
-        shelftimeDao   = daoSession.getShelftimeDao();
-        spotDao        = daoSession.getSpotDao();
-        telephoneDao   = daoSession.getTelephoneDao();
+        clientDao                   = daoSession.getClientDao();
+        countDao                    = daoSession.getCountDao();
+        itemDao                     = daoSession.getItemDao();
+        orderDao                    = daoSession.getOrderDao();
+        photoDao                    = daoSession.getPhotoDao();
+        shelftimeDao                = daoSession.getShelftimeDao();
+        spotDao                     = daoSession.getSpotDao();
+        telephoneDao                = daoSession.getTelephoneDao();
+        itineraryDao                = daoSession.getItineraryDao();
+        cross_itinerary_clientDao   = daoSession.getCross_Itinerary_ClientDao();
     }
 
     public static void setHelper(Context context) {
@@ -117,4 +123,8 @@ public class DatabaseHelper {
     public static TelephoneDao getTelephoneDao() {
         return telephoneDao;
     }
+
+    public static ItineraryDao getItineraryDao() { return itineraryDao; }
+
+    public static Cross_Itinerary_ClientDao getCross_itinerary_clientDao() { return cross_itinerary_clientDao; }
 }
