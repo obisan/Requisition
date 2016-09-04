@@ -6,7 +6,7 @@ import org.greenrobot.greendao.generator.Schema;
 
 public class MainGenerator {
 
-    private static final Integer DATABASE_VERSION = 10;
+    private static final Integer DATABASE_VERSION = 15;
     private static final String PROJECT_DIR = System.getProperty("user.dir");
 
     public static void main(String[] args) {
@@ -32,8 +32,12 @@ public class MainGenerator {
         Entity item                     = addItem(schema);
         Entity photo                    = addPhoto(schema);
         Entity count                    = addCount(schema);
-        Entity order                    = addOrder(schema);
         Entity spot                     = addSpot(schema);
+        Entity week                     = addWeek(schema);
+        Entity dayofweek                = addDay_of_week(schema);
+
+        week.addToMany(itinerary,        itinerary.addLongProperty("week_id").notNull().getProperty());
+        dayofweek.addToMany(itinerary,   itinerary.addLongProperty("day_of_week_id").notNull().getProperty());
 
         itinerary.addToMany(cross_itinerary_client, cross_itinerary_client.addLongProperty("itinerary_id").notNull().getProperty());
 
@@ -41,17 +45,32 @@ public class MainGenerator {
         client.addToMany(cross_itinerary_client, cross_itinerary_client.addLongProperty("client_id").notNull().getProperty());
 
 
-        shelftime.addToMany(item,   item.addLongProperty("shelftime_id").notNull().getProperty());
+        shelftime.addToMany(item,   item.addLongProperty("shelftime_id").getProperty());
         type.addToMany(item,        item.addLongProperty("type_id").notNull().getProperty());
 
         item.addToMany(photo,       photo.addLongProperty("item_id").notNull().getProperty());
 
-        client.addToMany(order,     order.addLongProperty("client_id").notNull().getProperty());
-
-        order.addToMany(spot,       spot.addLongProperty("order_id").notNull().getProperty());
+        client.addToMany(spot,      spot.addLongProperty("client_id").notNull().getProperty());
         item.addToMany(spot,        spot.addLongProperty("item_id").notNull().getProperty());
         count.addToMany(spot,       spot.addLongProperty("count_id").notNull().getProperty());
+        itinerary.addToMany(spot,   spot.addLongProperty("itinerary_id").notNull().getProperty());
 
+    }
+
+    private static Entity addWeek(final Schema schema) {
+        Entity week = schema.addEntity("Week");
+        week.addIdProperty().primaryKey().autoincrement();
+        week.addDateProperty("date_start_week");
+
+        return week;
+    }
+
+    private static Entity addDay_of_week(final Schema schema) {
+        Entity day_of_week = schema.addEntity("DayOfWeek");
+        day_of_week.addIdProperty().primaryKey().autoincrement();
+        day_of_week.addStringProperty("day_of_week");
+
+        return day_of_week;
     }
 
     private static Entity addClient(final Schema schema) {
@@ -68,13 +87,12 @@ public class MainGenerator {
         Entity itinerary = schema.addEntity("Itinerary");
         itinerary.addIdProperty().primaryKey().autoincrement();
         itinerary.addStringProperty("itinerary_name").notNull();
-        itinerary.addStringProperty("day_of_week").notNull();
 
         return itinerary;
     }
 
     private static Entity addCross_Itinerary_Client(final Schema schema) {
-        Entity cross_itinerary_client = schema.addEntity("Cross_Itinerary_Client");
+        Entity cross_itinerary_client = schema.addEntity("CrossItineraryClient");
         cross_itinerary_client.addIdProperty().primaryKey().autoincrement();
 
         return cross_itinerary_client;
@@ -109,6 +127,7 @@ public class MainGenerator {
         Entity item = schema.addEntity("Item");
         item.addIdProperty().primaryKey().autoincrement();
         item.addStringProperty("item_name");
+        item.addDoubleProperty("item_price");
 
         return item;
     }
@@ -127,14 +146,6 @@ public class MainGenerator {
         count.addIntProperty("count");
 
         return count;
-    }
-
-    private static Entity addOrder(final Schema schema) {
-        Entity order = schema.addEntity("Order");
-        order.addIdProperty().primaryKey().autoincrement();
-        order.addDateProperty("creation_date");
-
-        return order;
     }
 
     private static Entity addSpot(final Schema schema) {

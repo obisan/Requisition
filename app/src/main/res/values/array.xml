@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="menu">
+        <item>Info</item>
+        <item>Edit</item>
+        <item>Delete</item>
+    </array>
+
+    <string-array name="navigation_menu">
+        <item>Маршруты</item>
+        <item>Клиенты</item>
+        <item>Товары</item>
+    </string-array>
+
+</resources>

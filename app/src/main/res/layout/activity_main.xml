@@ -1,19 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout"
+    android:id="@+id/activity_main_drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+    android:layout_height="match_parent" >
 
-    <fragment
-        android:id="@+id/listfragment_itenerary"
-        android:name="com.dubinets.requisition.activity.order.ItineraryListFragment"
+    <!-- The main content view -->
+    <FrameLayout
+        android:id="@+id/activity_main_content_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout="@android:layout/simple_list_item_1">
-    </fragment>
+        android:layout_height="match_parent">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="@android:dimen/app_icon_size"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:layout_gravity="left"
+                    android:id="@+id/activity_main_btn_next_week"
+                    android:background="@drawable/ic_chevron_left_black_18dp"
+                    android:onClick="onClickButtonPrev"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=""
+                    android:layout_gravity="center"
+                    android:id="@+id/activity_main_txv_week"
+                    android:textColor="@android:color/black" />
+                <Button
+                    android:layout_width="@android:dimen/app_icon_size"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:layout_gravity="right"
+                    android:id="@+id/activity_main_btn_prev_week"
+                    android:background="@drawable/ic_chevron_right_black_18dp"
+                    android:onClick="onClickButtonNext"
+                    />
+
+            </FrameLayout>
+
+            <fragment
+                android:id="@+id/activity_main_listfragment_itineraries"
+                android:name="com.dubinets.requisition.activity.ItineraryFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@android:layout/simple_list_item_1">
+            </fragment>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- The navigation drawer -->
+    <ListView
+        android:id="@+id/activity_main_navigation_list"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:background="@color/background" />
+
+</android.support.v4.widget.DrawerLayout>

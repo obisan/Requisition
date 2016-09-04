@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">"VELES"</string>
+    <string name="prev_week">"Прошлая"</string>
+    <string name="next_week">"Следующая"</string>
+
+    <string name="action_add">Добавить</string>
+    <string name="action_refresh">Обновить</string>
+    <string name="firm_name">Название фирмы</string>
+    <string name="firm_address">Адрес фирмы</string>
+    <string name="firm_notice">Примечание</string>
+    <string name="item_class">Вид товара: </string>
+    <string name="item_name">Наименование товара</string>
+    <string name="item_shelftime">Срок годности</string>
+    <string name="item_price">Цена</string>
+    <string name="days">сут.</string>
+    <string name="measure">руб./кг.</string>
+    <string name="send_email">Отправить</string>
 </resources>

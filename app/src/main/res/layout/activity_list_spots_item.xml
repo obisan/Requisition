@@ -8,19 +8,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/list_itinerary_item_text_day_of_week" />
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-        <!--android:id="@+id/list_itinerary_item_itinerary_name" />-->
-
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/list_spot_item_name"
+        android:textColor="@android:color/black" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Small Text"
-        android:id="@+id/list_itenerary_item_number_clients" />
+        android:id="@+id/list_spot_item_shelftime" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/list_spot_item_count" />
+
 </LinearLayout>

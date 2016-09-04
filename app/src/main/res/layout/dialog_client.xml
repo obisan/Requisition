@@ -6,8 +6,8 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/listframent_client"
-        android:name="com.dubinets.requisition.activity.ClientActivityFragment"
+        android:id="@+id/dialog_client_listfragment"
+        android:name="com.dubinets.requisition.activity.ClientDialogFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </fragment>

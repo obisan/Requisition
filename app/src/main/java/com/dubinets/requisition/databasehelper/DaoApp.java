@@ -1,4 +1,4 @@
-package com.dubinets.requisition.activity;
+package com.dubinets.requisition.databasehelper;
 
 import android.app.Application;
 

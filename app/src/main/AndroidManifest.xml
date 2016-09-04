@@ -3,24 +3,49 @@
     package="com.dubinets.requisition">
 
     <application
-        android:name=".activity.DaoApp"
+        android:name=".databasehelper.DaoApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.ItineraryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".activity.order.OrderDetailedActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".activity.order.ClientListActivity"
+            android:name=".activity.ClientActivity"
             android:label="@string/app_name"/>
+
+        <activity
+            android:name=".activity.SpotActivity"/>
+
+        <activity
+            android:name=".activity.ItemActivity"/>
+
+        <activity
+            android:name=".activity.ClientDialog"/>
+
+        <activity
+            android:name=".activity.navigation.ClientActivity"/>
+
+        <activity
+            android:name=".activity.navigation.ItemActivity"/>
+
+        <activity
+            android:name=".activity.dialog.ClientDialog"/>
+
+        <activity
+            android:name=".activity.dialog.ItemDialog"/>
+
+        <activity
+            android:name=".activity.info.ClientInfo"/>
+
+        <activity
+            android:name=".activity.info.ItemInfo"/>
 
     </application>
 
