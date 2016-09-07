@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dubinets.requisition">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
     <application
         android:name=".databasehelper.DaoApp"
         android:allowBackup="true"
@@ -36,16 +41,28 @@
             android:name=".activity.navigation.ItemActivity"/>
 
         <activity
+            android:name=".activity.navigation.TypeActivity"/>
+
+        <activity
             android:name=".activity.dialog.ClientDialog"/>
 
         <activity
             android:name=".activity.dialog.ItemDialog"/>
 
         <activity
+            android:name=".activity.dialog.TypeDialog"/>
+
+        <activity
             android:name=".activity.info.ClientInfo"/>
 
         <activity
             android:name=".activity.info.ItemInfo"/>
+
+        <activity
+            android:name=".activity.info.TypeInfo"/>
+
+        <activity
+            android:name=".activity.SettingsActivity"/>
 
     </application>
 

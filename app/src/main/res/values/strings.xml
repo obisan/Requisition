@@ -15,4 +15,8 @@
     <string name="days">сут.</string>
     <string name="measure">руб./кг.</string>
     <string name="send_email">Отправить</string>
+    <string name="settings">Настройки</string>
+    <string name="emails">emails:</string>
+    <string name="email1_ya_ru_email2_ya_ru">email1@ya.ru, email2@ya.ru</string>
+    <string name="category">Категория товара</string>
 </resources>

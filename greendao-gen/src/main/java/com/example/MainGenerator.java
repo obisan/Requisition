@@ -46,7 +46,7 @@ public class MainGenerator {
 
 
         shelftime.addToMany(item,   item.addLongProperty("shelftime_id").getProperty());
-        type.addToMany(item,        item.addLongProperty("type_id").notNull().getProperty());
+        type.addToMany(item,        item.addLongProperty("type_id").getProperty());
 
         item.addToMany(photo,       photo.addLongProperty("item_id").notNull().getProperty());
 

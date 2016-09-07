@@ -60,10 +60,10 @@ public class ClientDialog extends AppCompatActivity {
             Integer number_positions    = DatabaseHelper._queryClientItinerary_SpotList(itinerary_id, client_id).size();
 
             HashMap<String, Object> hashMap = new HashMap<>();
-            hashMap.put(CLIENT_ID, client.getId());
-            hashMap.put(CLIENT_NAME, client.getClient_name());
-            hashMap.put(CLIENT_ADDRESS, client.getClient_address());
-            hashMap.put(NUMBER_POSITIONS, "Количество позиций: " + number_positions);
+            hashMap.put(CLIENT_ID,          client.getId());
+            hashMap.put(CLIENT_NAME,        client.getClient_name());
+            hashMap.put(CLIENT_ADDRESS,     client.getClient_address());
+            hashMap.put(NUMBER_POSITIONS,   "Количество позиций: " + number_positions);
 
             this.mClientList.add(hashMap);
         }
@@ -81,6 +81,7 @@ public class ClientDialog extends AppCompatActivity {
                         R.id.dialog_client_item_address
                 }
         );
+
         this.mListFragment.setListAdapter(mAdapter);
     }
 }

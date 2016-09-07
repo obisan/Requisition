@@ -135,10 +135,10 @@ public class ItemDialog extends AppCompatActivity {
         Long shelftime_id   = DatabaseHelper.getShelftimeByValue(Integer.valueOf(item_shelftime));
         Long type_id        = (Long) ((HashMap<String, Object>) mSpinner.getSelectedItem()).get(TYPE_ID);
 
-        item.setItem_name(item_name);
-        item.setItem_price(Double.valueOf(item_price.toString()));
-        item.setShelftime_id(shelftime_id);
-        item.setType_id(type_id);
+        this.item.setItem_name(item_name);
+        this.item.setItem_price(Double.valueOf(item_price.toString()));
+        this.item.setShelftime_id(shelftime_id);
+        this.item.setType_id(type_id);
 
         synchronized (this) {
             if(item.getId() == null) {

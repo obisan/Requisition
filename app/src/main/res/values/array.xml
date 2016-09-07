@@ -10,6 +10,7 @@
         <item>Маршруты</item>
         <item>Клиенты</item>
         <item>Товары</item>
+        <item>Категории</item>
     </string-array>
 
 </resources>

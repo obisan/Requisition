@@ -1,9 +1,15 @@
 package com.dubinets.requisition.activity;
 
 import android.app.ListFragment;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +26,7 @@ import com.dubinets.requisition.db.Client;
 import com.dubinets.requisition.db.CrossItineraryClient;
 import com.dubinets.requisition.db.Itinerary;
 import com.dubinets.requisition.db.Spot;
+import com.dubinets.requisition.mail.EmailGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,16 +75,23 @@ public class ClientActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = null;
         switch (item.getItemId()) {
             case R.id.menu_mail_email:
                 sendEmail();
                 return true;
 
             case R.id.menu_mail_add:
-                Intent intent = new Intent(this, ClientDialog.class);
+                intent = new Intent(this, ClientDialog.class);
                 intent.putExtra("itinerary_id", itinerary_id);
                 startActivity(intent);
                 return true;
+
+            case R.id.menu_mail_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -173,6 +187,20 @@ public class ClientActivity extends AppCompatActivity {
     }
 
     private void sendEmail() {
+        String subject      = EmailGenerator.subject_clients(this.itinerary_id);
+        String body         = EmailGenerator.body_clients(this.itinerary_id);
+        String recipients   = PreferenceManager.getDefaultSharedPreferences(this).getString("emails", "");
 
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL,     new String[] {recipients} );
+        intent.putExtra(Intent.EXTRA_SUBJECT,   subject );
+        intent.putExtra(Intent.EXTRA_TEXT,      body );
+
+        try {
+            startActivity(Intent.createChooser(intent, "Send mail"));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

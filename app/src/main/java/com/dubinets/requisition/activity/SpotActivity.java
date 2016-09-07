@@ -1,8 +1,10 @@
 package com.dubinets.requisition.activity;
 
 import android.app.ListFragment;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import com.dubinets.requisition.db.Count;
 import com.dubinets.requisition.db.Item;
 import com.dubinets.requisition.db.Shelftime;
 import com.dubinets.requisition.db.Spot;
+import com.dubinets.requisition.mail.EmailGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +48,8 @@ public class SpotActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_spots);
 
-        this.client_id = getIntent().getLongExtra("client_id", 1L);
-        this.itinerary_id = getIntent().getLongExtra("client_id", 1L);
+        this.client_id      = getIntent().getLongExtra("client_id"      , 1L);
+        this.itinerary_id   = getIntent().getLongExtra("itinerary_id"   , 1L);
 
         setSpotList();
     }
@@ -61,20 +64,30 @@ public class SpotActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_add, menu);
+        inflater.inflate(R.menu.menu_mail_add, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = null;
         switch (item.getItemId()) {
-            case R.id.menu_add_button:
-                Intent intent = new Intent(this, ItemActivity.class);
+            case R.id.menu_mail_email:
+                sendEmail();
+                return true;
+
+            case R.id.menu_mail_add:
+                intent = new Intent(this, ItemActivity.class);
                 intent.putExtra("client_id",    client_id);
                 intent.putExtra("itinerary_id", itinerary_id);
                 startActivity(intent);
-
                 return true;
+
+            case R.id.menu_mail_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -161,4 +174,21 @@ public class SpotActivity extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
+    private void sendEmail() {
+        String subject      = EmailGenerator.subject_client(this.itinerary_id, this.client_id);
+        String body         = EmailGenerator.body_client(this.itinerary_id, this.client_id);
+        String recipients   = PreferenceManager.getDefaultSharedPreferences(this).getString("emails", "");
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL,     new String[] {recipients} );
+        intent.putExtra(Intent.EXTRA_SUBJECT,   subject );
+        intent.putExtra(Intent.EXTRA_TEXT,      body );
+
+        try {
+            startActivity(Intent.createChooser(intent, "Send mail"));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

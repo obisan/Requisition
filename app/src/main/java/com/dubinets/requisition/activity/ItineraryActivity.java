@@ -1,11 +1,16 @@
 package com.dubinets.requisition.activity;
 
 import android.app.ListFragment;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,26 +22,30 @@ import android.widget.Toast;
 import com.dubinets.requisition.R;
 import com.dubinets.requisition.activity.navigation.ClientActivity;
 import com.dubinets.requisition.activity.navigation.ItemActivity;
+import com.dubinets.requisition.activity.navigation.TypeActivity;
 import com.dubinets.requisition.databasehelper.DatabaseHelper;
+import com.dubinets.requisition.db.CrossItineraryClient;
 import com.dubinets.requisition.db.Itinerary;
 import com.dubinets.requisition.db.Week;
 import com.dubinets.requisition.locale.Locale;
+import com.dubinets.requisition.mail.EmailGenerator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 public class ItineraryActivity extends AppCompatActivity {
-    private final String ITINERARY_ID = "ITINERARY_ID";
+    private final String ITINERARY_ID   = "ITINERARY_ID";
     private final String ITINERARY_NAME = "ITINERARY_NAME";
     private final String NUMBER_CLIENTS = "NUMBER_CLIENTS";
-    private final String DAY_OF_WEEK = "DAY_OF_WEEK";
+    private final String DAY_OF_WEEK    = "DAY_OF_WEEK";
 
     private ArrayList<HashMap<String, Object>> mItineraryList = new ArrayList<>();
 
     private int current_week;
-    private static List<Week> weeks;
+    private List<Week> weeks;
     private final static SimpleDateFormat SDF = new SimpleDateFormat("dd / MMMM / yyyy", Locale.RUSSIAN);
 
     private ListFragment mListFragment;
@@ -50,13 +59,16 @@ public class ItineraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.mListFragment = (ListFragment) getFragmentManager().findFragmentById(R.id.activity_main_listfragment_itineraries);
-        this.mDrawerList = (ListView) findViewById(R.id.activity_main_navigation_list);
+        this.mListFragment  = (ListFragment) getFragmentManager().findFragmentById(R.id.activity_main_listfragment_itineraries);
+        this.mDrawerList    = (ListView) findViewById(R.id.activity_main_navigation_list);
 
-        this.current_week = 0;
-        this.weeks = DatabaseHelper.loadAllWeeksSorted();
-        Week week = weeks.get(current_week);
-        Long week_id = week.getId();
+        this.current_week   = 0;
+        this.weeks          = DatabaseHelper.loadAllWeeksSorted();
+        this.weeks          = isWeeksEmpty(weeks);
+
+
+        Week week       = weeks.get(current_week);
+        Long week_id    = week.getId();
         getIntent().putExtra("week_id", week_id);
 
         /////////////////----------------------------------
@@ -68,6 +80,7 @@ public class ItineraryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setViews(current_week);
         setListFragment(current_week);
     }
 
@@ -76,6 +89,28 @@ public class ItineraryActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_mail_add, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = null;
+        switch (item.getItemId()) {
+            case R.id.menu_mail_email:
+                sendEmail();
+                return true;
+
+            case R.id.menu_mail_add:
+                addWeek();
+                return true;
+
+            case R.id.menu_mail_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void onClickButtonPrev(View v) {
@@ -180,7 +215,86 @@ public class ItineraryActivity extends AppCompatActivity {
                     intent = new Intent(getBaseContext(), ItemActivity.class);
                     startActivity(intent);
                     break;
+                // Types
+                case 3:
+                    intent = new Intent(getBaseContext(), TypeActivity.class);
+                    startActivity(intent);
+                    break;
+
             }
+        }
+    }
+
+    private List<Week> isWeeksEmpty(List<Week> weeks) {
+        if(weeks.isEmpty()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear(Calendar.MINUTE);
+            calendar.clear(Calendar.SECOND);
+            calendar.clear(Calendar.MILLISECOND);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+
+            Week week = new Week(null, calendar.getTime());
+
+            DatabaseHelper.getWeekDao().insert(week);
+        }
+
+        return weeks;
+    }
+
+    private void addWeek() {
+        Week week           = DatabaseHelper.getWeekDao().load(this.weeks.get(0).getId());
+        Calendar calendar   = Calendar.getInstance();
+        calendar.setTime(week.getDate_start_week());
+        calendar.add(Calendar.DAY_OF_YEAR, 7);
+
+        Week newWeek        = new Week(null, calendar.getTime());
+        DatabaseHelper.getWeekDao().insert(newWeek);
+
+        List<Itinerary> itineraries = DatabaseHelper.getWeekDao().load(this.weeks.get(0).getId()).getItineraryList();
+        for(Itinerary itinerary : itineraries) {
+            List<CrossItineraryClient> crossItineraryClients
+                    = DatabaseHelper.getCrossItineraryClientDao()
+                    ._queryItinerary_CrossItineraryClientList(itinerary.getId());
+
+            itinerary.setId(null);
+            itinerary.setWeek_id(newWeek.getId());
+
+            Long rowId = DatabaseHelper.getItineraryDao().insert(itinerary);
+            itinerary = DatabaseHelper.getItineraryDao().loadByRowId(rowId);
+
+            for(CrossItineraryClient crossItineraryClient : crossItineraryClients) {
+                crossItineraryClient.setId(null);
+                crossItineraryClient.setItinerary_id(itinerary.getId());
+                DatabaseHelper.getCrossItineraryClientDao().insert(crossItineraryClient);
+            }
+
+        }
+
+        Toast.makeText(this, "Новая неделя добавлена", Toast.LENGTH_SHORT).show();
+
+        this.weeks = DatabaseHelper.loadAllWeeksSorted();
+
+        setViews(0);
+        setListFragment(0);
+
+    }
+
+    private void sendEmail() {
+        String subject      = EmailGenerator.subject_itineraries(weeks.get(current_week).getId());
+        String body         = EmailGenerator.body_itineraries   (weeks.get(current_week).getId());
+        String recipients   = PreferenceManager.getDefaultSharedPreferences(this).getString("emails", "");
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("message/rfc822");
+        intent.putExtra(Intent.EXTRA_EMAIL,     new String[] {recipients} );
+        intent.putExtra(Intent.EXTRA_SUBJECT,   subject );
+        intent.putExtra(Intent.EXTRA_TEXT,      body );
+
+        try {
+            startActivity(Intent.createChooser(intent, "Send mail"));
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
